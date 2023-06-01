@@ -3,6 +3,7 @@ import openai
 # OpenAi API key to use for this file.
 import variables
 import tokenCounter
+import userInput
 
 # Set up your OpenAI API key
 openai.api_key = variables.api_key
@@ -26,8 +27,10 @@ def generate_chat_completion(messages):
     return completion
 
 def main():
-    system = "You are a SQL code generator. Your responses will only contain SQL code."
-    prompt = "Can you generate a random sql statement?"
+    system = "You are a SQL code generator. Your responses will only contain SQL code. Encapsulate all output in SQL comments."
+    prompt = ""
+    prompt = userInput.uInput("")
+    print("\n")
     messages = [
         {"role": "system", "content": system},
         {"role": "user", "content": prompt}
@@ -41,14 +44,11 @@ def main():
         completion = generate_chat_completion(messages)
         #print the response here
         print(completion, "\n")
-        prompt = input()
+        prompt = userInput.uInput("")
         print("\n")
         messages.append({"role": "user", "content": prompt})
-
-    # Print the response
-    #print("Response:", completion)
-    #print("Messages: ", messages)
+    
+    print(messages)
 
 if __name__ == '__main__':
     main()
-
