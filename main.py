@@ -3,7 +3,7 @@ import openai
 # Set up your OpenAI API key
 openai.api_key = "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"
 
-def generate_chat_completion(prompt, messages):
+def generate_chat_completion(messages):
     # Set the engine and parameters
     model = "gpt-3.5-turbo"
     max_tokens = 50
@@ -30,14 +30,15 @@ def main():
 
     # Generate a chat completion
     while(prompt != "done"):
-        completion = generate_chat_completion(prompt, messages)
+        completion = generate_chat_completion(messages)
+        #print the response here
         print("Response:", completion)
         prompt = input()
         messages.append({"role": "user", "content": prompt})
 
     # Print the response
     #print("Response:", completion)
-    print("Messages: ", messages)
+    #print("Messages: ", messages)
 
 if __name__ == '__main__':
     main()
