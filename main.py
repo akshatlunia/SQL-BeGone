@@ -1,7 +1,10 @@
 import openai
+#variables is a personal file to hold sensitive personal information. Create your own
+# OpenAi API key to use for this file.
+import variables
 
 # Set up your OpenAI API key
-openai.api_key = "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"
+openai.api_key = variables.api_key
 
 def generate_chat_completion(messages):
     # Set the engine and parameters
