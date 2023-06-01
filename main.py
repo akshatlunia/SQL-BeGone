@@ -20,7 +20,7 @@ def generate_chat_completion(messages):
     #Append the received message by the ai to our message thread
     messages.append({"role": response.choices[0]["message"]["role"],
                      "content": response.choices[0]["message"]["content"]})
-    print(response.usage)
+    print("tokens used for this interaction: ", response.usage["total_tokens"], "\n")
     # Get the response text
     completion = response.choices[0]["message"]["content"]
 
@@ -29,8 +29,8 @@ def generate_chat_completion(messages):
 def main():
     system = "You are a SQL code generator. Your responses will only contain SQL code. Encapsulate all output in SQL comments."
     prompt = ""
+    print("Input:")
     prompt = userInput.uInput("")
-    print("\n")
     messages = [
         {"role": "system", "content": system},
         {"role": "user", "content": prompt}
@@ -38,17 +38,19 @@ def main():
 
     # Generate a chat completion
     while(prompt != "done"):
-        if tokenCounter.num_tokens_from_messages(messages, model) > 4095:
+        tokens = tokenCounter.num_tokens_from_messages(messages, model)
+        if tokens > 4095:
             print("Message string is too long, quitting program.")
             break
+        else:
+            print("This request will use", tokens, "tokens for your prompt.\n")
         completion = generate_chat_completion(messages)
         #print the response here
-        print(completion, "\n")
+        print(completion, "\n\n\nInput:")
         prompt = userInput.uInput("")
-        print("\n")
         messages.append({"role": "user", "content": prompt})
     
-    print(messages)
+    #print(messages)
 
 if __name__ == '__main__':
     main()
