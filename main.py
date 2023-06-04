@@ -1,31 +1,32 @@
 import openai
 #Variables is a personal file to hold sensitive personal information. Create your own
 # OpenAi API key to use for this file.
-import os.path
+#import os.path
 #Check if variables file has been created to access private key
-if os.path.exists('./variables.py'):
-    import variables
-else:
-    print("Please enter your api_key in variables.py!")
-    print("Get yours at https://platform.openai.com/account/api-keys")
-    exit(1)
+#if os.path.exists('./variables.py'):
+#    import variables
+#else:
+#    print("Please enter your api_key in variables.py!")
+#    print("Get yours at https://platform.openai.com/account/api-keys")
+#    exit(1)
 import tokenCounter
 import userInput
 
 # Set up your OpenAI API key
 # Check if the user has inputted their own API key
-try:
-    openai.api_key = variables.api_key
-except:
-    print("Please enter your api_key in variables.py!")
-    print("Get yours at https://platform.openai.com/account/api-keys")
-    exit(1)
+#try:
+#    openai.api_key = variables.api_key
+#except:
+#    print("Please enter your api_key in variables.py!")
+#    print("Get yours at https://platform.openai.com/account/api-keys")
+#    exit(1)
 #The model we want to use from OpenAI
 model = "gpt-3.5-turbo-0301"
 
-def generate_chat_completion(messages):
+def generate_chat_completion(messages, key):
     # Generate a chat completion
     try:
+        openai.api_key = key
         response = openai.ChatCompletion.create(
             model = model,
             messages = messages,
@@ -33,7 +34,7 @@ def generate_chat_completion(messages):
         )
     except:
         print("Invalid API key, please try a different one")
-        exit(1)
+        return "-1Error"
 
     #Append the received message by the ai to our message thread
     messages.append({"role": response.choices[0]["message"]["role"],
@@ -45,7 +46,7 @@ def generate_chat_completion(messages):
 
     return completion
 
-def GUIinputPrompt(prompt, messages):
+def GUIinputPrompt(prompt, messages, key):
     messages.append({"role": "user", "content": prompt})
 
     tokens = tokenCounter.num_tokens_from_messages(messages, model)
@@ -54,9 +55,13 @@ def GUIinputPrompt(prompt, messages):
         return
     else:
         print("This request will use", tokens, "tokens for your prompt.\n")
-    completion = generate_chat_completion(messages)
-    return messages
+    completion = generate_chat_completion(messages, key)
+    tokens = tokenCounter.num_tokens_from_messages(messages, model)
+    return completion, tokens
 
+
+
+#not using main, this was for testing and using CLI
 def main():
     system = "You are a SQL code generator. Your responses will only contain SQL code. Encapsulate all output in SQL comments."
     prompt = ""
